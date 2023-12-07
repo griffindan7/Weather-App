@@ -1,0 +1,42 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather App</title>
+</head>
+<body>
+  <h1>Weather App</h1>
+  <input type="text" id="location" placeholder="Enter location">
+  <button onclick="getWeather()">Get Weather</button>
+  <div id="weatherInfo"></div>
+
+  <script>
+    async function getWeather() {
+      const location = document.getElementById('location').value;
+      const response = await fetch(`/weather?location=${location}`);
+      const data = await response.json();
+
+      const weatherInfo = document.getElementById('weatherInfo');
+
+      if (response.ok) {
+        if (data && data.cod === 200) {
+          const weatherDetails = `
+            <h2>${data.name}, ${data.sys.country}</h2>
+            <p>Weather: ${data.weather[0].description}</p>
+            <p>Temperature: ${data.main.temp}°C</p>
+            <p>Humidity: ${data.main.humidity}%</p>
+            <p>Wind Speed: ${data.wind.speed} m/s</p>
+          `;
+          weatherInfo.innerHTML = weatherDetails;
+        } else {
+          weatherInfo.innerHTML = `<p>Error: Weather data not found</p>`;
+        }
+      } else {
+        weatherInfo.innerHTML = `<p>Error: ${data.message}</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
